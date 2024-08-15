@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyEllipsis">
+    <string name="app_name">Lyscraft</string>
+    <string name="navigation_icon">Navigation Icon</string>
+    <string name="please_wait">Please wait...</string>
+    <string name="no_data_found">No data found.</string>
+    <string name="error_message">Sorry! There was an error loading\nthe page.Please try again later.</string>
+    <string name="empty_state">Empty State</string>
+</resources>
