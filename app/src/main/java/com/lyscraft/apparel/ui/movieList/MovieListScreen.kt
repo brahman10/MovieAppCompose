@@ -126,6 +126,7 @@ fun SharedTransitionScope.MovieListItem(
         LoadNetworkImageWithPlaceholder(
             baseUrl = IMAGE_BASE_URL,
             imageUrl = movieListContent.backdropPath,
+            aspectRatio = 1f,
             modifier = Modifier.sharedElement(
                 state = rememberSharedContentState(key = "image/${movieListContent.id}"),
                 animatedVisibilityScope = animatedVisibilityScope,
