@@ -23,6 +23,10 @@ class MovieListViewModel @Inject constructor(
         const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original"
     }
 
+    init {
+        getMoviesList()
+    }
+
     private val _movieListState: MutableStateFlow<SealedResult<List<MovieListContent>>> =
         MutableStateFlow(SealedResult.None)
     var movieList = arrayListOf<MovieListContent>()
@@ -31,7 +35,7 @@ class MovieListViewModel @Inject constructor(
         MutableStateFlow(SealedResult.None)
     val filterMovieListState = _filterMovieListState.asStateFlow()
 
-    fun getMoviesList() {
+    private fun getMoviesList() {
         viewModelScope.launch {
             useCase.invoke().collectLatest {
                 _movieListState.emit(it)

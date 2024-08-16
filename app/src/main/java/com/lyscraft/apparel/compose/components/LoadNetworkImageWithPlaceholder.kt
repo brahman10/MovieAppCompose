@@ -18,7 +18,8 @@ import com.lyscraft.apparel.R
 fun LoadNetworkImageWithPlaceholder(
     baseUrl: String,
     imageUrl: String?,
-    aspectRatio: Float = 0.66f
+    aspectRatio: Float = 0.66f,
+    modifier: Modifier = Modifier
 ) {
     val imagePainter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
@@ -33,7 +34,7 @@ fun LoadNetworkImageWithPlaceholder(
     Image(
         painter = imagePainter,
         contentDescription = null,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .aspectRatio(aspectRatio)
             .clip(RoundedCornerShape(8.dp)),

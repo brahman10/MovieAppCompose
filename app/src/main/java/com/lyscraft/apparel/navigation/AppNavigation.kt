@@ -1,5 +1,7 @@
 package com.lyscraft.apparel.navigation
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -13,21 +15,31 @@ import com.lyscraft.apparel.ui.movieList.MovieListScreen
 import com.lyscraft.apparel.ui.movieList.MovieListViewModel
 import com.lyscraft.apparel.utils.ConstantsHelper.MOVIE_ID
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun AppNavigation(navController: NavHostController) {
     val startDestination = Routes.MOVIE_LIST
     val viewModel: MovieListViewModel = hiltViewModel()
-    NavHost(navController = navController, startDestination = startDestination) {
-        composable(Routes.MOVIE_LIST) {
-            MovieListScreen(navController = navController, viewModel)
-        }
-        composable(
-            "${Routes.MOVIE_DETAIL}/{${MOVIE_ID}}",
-            arguments = listOf(navArgument(MOVIE_ID) { type = NavType.IntType })
-        ) {
-            val movieId = it.arguments?.getInt(MOVIE_ID)
-            movieId?.let { MovieDetailScreen(navController, movieId.toString(), viewModel) }
-        }
+    SharedTransitionLayout {
+        NavHost(navController = navController, startDestination = startDestination) {
+            composable(Routes.MOVIE_LIST) {
+                MovieListScreen(navController = navController, viewModel, this)
+            }
+            composable(
+                "${Routes.MOVIE_DETAIL}/{${MOVIE_ID}}",
+                arguments = listOf(navArgument(MOVIE_ID) { type = NavType.IntType })
+            ) {
+                val movieId = it.arguments?.getInt(MOVIE_ID)
+                movieId?.let {
+                    MovieDetailScreen(
+                        navController,
+                        movieId.toString(),
+                        viewModel,
+                        this
+                    )
+                }
+            }
 
+        }
     }
 }

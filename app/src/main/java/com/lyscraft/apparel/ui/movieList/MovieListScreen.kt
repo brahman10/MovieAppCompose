@@ -3,6 +3,10 @@ package com.lyscraft.apparel.ui.movieList
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,10 +48,13 @@ import kotlinx.coroutines.launch
 /**
  * Created by Yash Chaturvedi on 15/08/24.
  */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Stable
 @Composable
-fun MovieListScreen(
-    navController: NavController, viewModel: MovieListViewModel
+fun SharedTransitionScope.MovieListScreen(
+    navController: NavController,
+    viewModel: MovieListViewModel,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     val movieList = viewModel.filterMovieListState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
@@ -57,9 +63,6 @@ fun MovieListScreen(
     val context = LocalContext.current as ComponentActivity
     BackHandler {
         context.finish()
-    }
-    LaunchedEffect(Unit) {
-        viewModel.getMoviesList()
     }
     Column(modifier = Modifier.fillMaxSize()) {
         when (movieList.value) {
@@ -96,7 +99,7 @@ fun MovieListScreen(
                             MovieListItem(modifier = Modifier.clickable {
                                 Log.d("TAG", "MovieDetailScreen: $viewModel")
                                 navController.navigate("${Routes.MOVIE_DETAIL}/${it.id}")
-                            }, movieListContent = it)
+                            }, movieListContent = it, animatedVisibilityScope)
                         }
                     }
 
@@ -111,12 +114,25 @@ fun MovieListScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Stable
 @Composable
-fun MovieListItem(modifier: Modifier, movieListContent: MovieListContent) {
+fun SharedTransitionScope.MovieListItem(
+    modifier: Modifier,
+    movieListContent: MovieListContent,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
     Column(modifier = modifier.padding(8.dp)) {
         LoadNetworkImageWithPlaceholder(
-            baseUrl = IMAGE_BASE_URL, imageUrl = movieListContent.posterPath
+            baseUrl = IMAGE_BASE_URL,
+            imageUrl = movieListContent.backdropPath,
+            modifier = Modifier.sharedElement(
+                state = rememberSharedContentState(key = "image/${movieListContent.id}"),
+                animatedVisibilityScope = animatedVisibilityScope,
+                boundsTransform = { _, _ ->
+                    tween(durationMillis = 1000)
+                }
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
