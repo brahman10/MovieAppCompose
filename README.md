@@ -1,2 +1,3 @@
 # MovieAppCompose
-[Watch the video](./recording/Movie.mp4)
+
+[Watch the video](./recording/Movies.mp4)
