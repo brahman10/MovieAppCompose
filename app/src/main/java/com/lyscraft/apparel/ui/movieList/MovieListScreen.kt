@@ -131,7 +131,7 @@ fun SharedTransitionScope.MovieListItem(
                 state = rememberSharedContentState(key = "image/${movieListContent.id}"),
                 animatedVisibilityScope = animatedVisibilityScope,
                 boundsTransform = { _, _ ->
-                    tween(durationMillis = 1000)
+                    tween(durationMillis = 500)
                 }
             )
         )
