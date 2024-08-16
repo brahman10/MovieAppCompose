@@ -23,6 +23,10 @@ class MovieListViewModel @Inject constructor(
         const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original"
     }
 
+    init {
+        getMoviesList()
+    }
+
     private val _movieListState: MutableStateFlow<SealedResult<List<MovieListContent>>> =
         MutableStateFlow(SealedResult.None)
     var movieList = arrayListOf<MovieListContent>()
@@ -30,6 +34,7 @@ class MovieListViewModel @Inject constructor(
     private val _filterMovieListState: MutableStateFlow<SealedResult<List<MovieListContent>>> =
         MutableStateFlow(SealedResult.None)
     val filterMovieListState = _filterMovieListState.asStateFlow()
+    val searchQuery = MutableStateFlow("")
 
     fun getMoviesList() {
         viewModelScope.launch {

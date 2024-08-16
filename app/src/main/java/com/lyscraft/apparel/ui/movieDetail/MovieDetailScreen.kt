@@ -79,7 +79,14 @@ fun SharedTransitionScope.MovieDetailScreen(
             text = movieListContent?.title ?: "",
             fontSize = 24.sp,
             fontWeight = FontWeight.SemiBold,
-            fontFamily = FontFamily.SansSerif
+            fontFamily = FontFamily.SansSerif,
+//            modifier = Modifier.sharedElement(
+//                state = rememberSharedContentState(key = "image/${movieListContent?.title}"),
+//                animatedVisibilityScope = animatedVisibilityScope,
+//                boundsTransform = { _, _ ->
+//                    tween(durationMillis = 500)
+//                }
+//            )
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(

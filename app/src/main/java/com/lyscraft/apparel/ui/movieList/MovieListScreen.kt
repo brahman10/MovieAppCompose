@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,15 +57,12 @@ fun SharedTransitionScope.MovieListScreen(
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     val movieList = viewModel.filterMovieListState.collectAsState()
-    var searchQuery by remember { mutableStateOf("") }
+    val searchQuery = viewModel.searchQuery.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     var searchJob: Job? by remember { mutableStateOf(null) }
     val context = LocalContext.current as ComponentActivity
     BackHandler {
         context.finish()
-    }
-    LaunchedEffect(Unit) {
-        viewModel.getMoviesList()
     }
     Column(modifier = Modifier.fillMaxSize()) {
         when (movieList.value) {
@@ -81,14 +77,13 @@ fun SharedTransitionScope.MovieListScreen(
                             PageLoader()
                         }
                     }
-
                 }
             }
 
             is SealedResult.Success -> {
-                SearchBar(searchQuery) {
+                SearchBar(searchQuery.value) {
                     // Cancel any previous job that was running
-                    searchQuery = it
+                    viewModel.searchQuery.value = it
                     searchJob?.cancel()
                     searchJob = coroutineScope.launch {
                         delay(1000)
@@ -144,7 +139,14 @@ fun SharedTransitionScope.MovieListItem(
             text = movieListContent.title ?: "",
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            fontFamily = FontFamily.SansSerif
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.sharedElement(
+                state = rememberSharedContentState(key = "image/${movieListContent.title}"),
+                animatedVisibilityScope = animatedVisibilityScope,
+                boundsTransform = { _, _ ->
+                    tween(durationMillis = 500)
+                }
+            )
         )
         Spacer(modifier = Modifier.height(24.dp))
     }
