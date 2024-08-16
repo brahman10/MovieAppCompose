@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -63,6 +64,9 @@ fun SharedTransitionScope.MovieListScreen(
     val context = LocalContext.current as ComponentActivity
     BackHandler {
         context.finish()
+    }
+    LaunchedEffect(Unit) {
+        viewModel.getMoviesList()
     }
     Column(modifier = Modifier.fillMaxSize()) {
         when (movieList.value) {
